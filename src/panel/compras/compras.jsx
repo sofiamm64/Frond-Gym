@@ -18,6 +18,7 @@ import {
   FormControl,
   InputLabel,
   IconButton,
+  Typography,
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -151,8 +152,12 @@ const Compras = () => {
 
   
   const guardarCambiosCompra = async (e) => {
-    e.preventDefault();
-  if (!proveedorID || !servicioID || !cantidad) return;
+     e.preventDefault();
+
+  if (!proveedorID || !servicioID || !cantidad) {
+    toast.error('Por favor, completa todos los campos obligatorios.');
+    return;
+  }
 
   try {
     const compraActual = compras.find(compra => compra.compraID === compraActualId);
@@ -162,51 +167,41 @@ const Compras = () => {
       return;
     }
 
-    if (compraActual.Tipo === 'completada' && tipo === 'cancelado') {
-      await axios.put(
-        `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
-        { cantidad: -compraActual.Cantidad },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+    switch (true) {
+      case compraActual.Tipo === 'completada' && (tipo === 'cancelado' || tipo === 'pendiente'):
+        await axios.put(
+          `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
+          { cantidad: -compraActual.Cantidad }, 
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setServicios((prevServicios) => {
+          const servicioActualizado = prevServicios.find(servicio => servicio.ServicioID === Number(compraActual.ServicioID));
+          if (servicioActualizado) {
+            servicioActualizado.Cantidad += Number(compraActual.Cantidad);
+          }
+          return [...prevServicios];
+        });
+        break;
 
-      setServicios((prevServicios) => {
-        const servicioActualizado = prevServicios.find(servicio => servicio.ServicioID === Number(compraActual.ServicioID));
-        if (servicioActualizado) {
-          servicioActualizado.Cantidad = servicioActualizado.Cantidad + Number(compraActual.Cantidad);
-        }
-        return [...prevServicios];
-      });
-    } else if (compraActual.Tipo === 'completada' && tipo === 'pendiente') {
-      await axios.put(
-        `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
-        { cantidad: -compraActual.Cantidad },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      case compraActual.Tipo === 'pendiente' && tipo === 'completada':
+        await axios.put(
+          `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
+          { cantidad: Number(cantidad) },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setServicios((prevServicios) => {
+          const servicioActualizado = prevServicios.find(servicio => servicio.ServicioID === Number(compraActual.ServicioID));
+          if (servicioActualizado) {
+            servicioActualizado.Cantidad -= Number(cantidad); 
+          }
+          return [...prevServicios];
+        });
+        break;
 
-      setServicios((prevServicios) => {
-        const servicioActualizado = prevServicios.find(servicio => servicio.ServicioID === Number(compraActual.ServicioID));
-        if (servicioActualizado) {
-          servicioActualizado.Cantidad = servicioActualizado.Cantidad + Number(compraActual.Cantidad);
-        }
-        return [...prevServicios];
-      });
+      default:
+        break;
     }
 
-    if (compraActual.Tipo === 'pendiente' && tipo === 'completada') {
-      await axios.put(
-        `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
-        { cantidad: Number(cantidad) },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      setServicios((prevServicios) => {
-        const servicioActualizado = prevServicios.find(servicio => servicio.ServicioID === Number(compraActual.ServicioID));
-        if (servicioActualizado) {
-          servicioActualizado.Cantidad = servicioActualizado.Cantidad - Number(cantidad);
-        }
-        return [...prevServicios];
-      });
-    }
 
     const response = await axios.put(
       `https://a-1-bym0.onrender.com/compras/${compraActualId}`,
@@ -222,9 +217,12 @@ const Compras = () => {
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    setCompras((prevCompras) => prevCompras.map((compra) =>
-      compra._id === compraActualId ? response.data : compra
-    ));
+    setCompras((prevCompras) =>
+      prevCompras.map((compra) =>
+        compra._id === compraActualId ? response.data : compra
+      )
+    );
+
     toast.success('Compra actualizada con éxito!');
   } catch (error) {
     toast.error(`Error al registrar la compra: ${error.response?.data?.message || 'Error desconocido.'}`);
@@ -258,6 +256,9 @@ const Compras = () => {
   return (
     <Box>
       <Paper elevation={3} sx={{ padding: 3, borderRadius: 2 }}>
+      <Typography variant="h4" gutterBottom>
+                {editando ? 'Actualizar Compra' : 'Agregar Compra'}
+        </Typography>
         <form onSubmit={editando ? guardarCambiosCompra : registrarCompra}>
           <Box display="flex" flexWrap="wrap" justifyContent="space-between" mb={3}>
             <Box width="48%">
@@ -323,7 +324,9 @@ const Compras = () => {
           <Button variant="contained" color="primary" type="submit">{editando ? 'Guardar Cambios' : 'Registrar Compra'}</Button>
         </form>
       </Paper>
-      
+      <Typography variant="h5" gutterBottom style={{ marginTop: '20px' }}>
+                Compras Agregad
+      </Typography>
       <Box mt={3}>
         <TextField 
           label="Buscar..." 

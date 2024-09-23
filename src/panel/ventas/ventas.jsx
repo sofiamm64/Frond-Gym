@@ -240,9 +240,10 @@ const Ventas = () => {
                 label="Precio Unitario"
                 type="number"
                 value={precioU}
-                disabled
+                onChange={(e) => setPrecioU(e.target.value)}
                 margin='normal'
                 fullWidth
+                InputProps={{ readOnly: true }}
               />
             </Box>
             <Box width="48%">
@@ -250,9 +251,10 @@ const Ventas = () => {
                 label="Total"
                 type="number"
                 value={total}
-                disabled
+                onChange={(e) => setTotal(e.target.value)}
                 margin='normal'
                 fullWidth
+                InputProps={{ readOnly: true }}
               />
             </Box>
             <Box width="48%">
@@ -277,20 +279,28 @@ const Ventas = () => {
               </FormControl>
             </Box>
           </Box>
-          <Button variant="contained" type="submit">
-            {editando ? 'Guardar Cambios' : 'Registrar Venta'}
+          <Button variant="contained" color="primary" type="submit">
+            {editando ? 'Actualizar Venta' : 'Registrar Venta'}
           </Button>
         </form>
       </Paper>
 
-      <Paper elevation={3} sx={{ marginTop: 3 }}>
+      <Box mt={3}>
+        <TextField
+          label="Buscar"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          fullWidth
+          margin='normal'
+        />
+
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
-              <TableCell>ventaID</TableCell>
-                <TableCell>Cliente</TableCell>
-                <TableCell>Servicio</TableCell>
+                <TableCell>ID Venta</TableCell>
+                <TableCell>ID Cliente</TableCell>
+                <TableCell>ID Servicio</TableCell>
                 <TableCell>Cantidad</TableCell>
                 <TableCell>Precio Unitario</TableCell>
                 <TableCell>Total</TableCell>
@@ -300,30 +310,26 @@ const Ventas = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {ventasPaginadas.map((venta) => {
-                const cliente = clientes.find(cli => Number(cli.ClienteID) === venta.ClienteID);
-                const servicio = servicios.find(serv => serv.ServicioID === Number(venta.ServicioID));
-                return (
-                  <TableRow key={venta.ventaID}>
-                    <TableCell>{cliente?.ventaID}</TableCell>
-                    <TableCell>{cliente?.nombre}</TableCell>
-                    <TableCell>{servicio?.Nombre}</TableCell>
-                    <TableCell>{venta.Cantidad}</TableCell>
-                    <TableCell>{venta.PrecioU}</TableCell>
-                    <TableCell>{venta.Total}</TableCell>
-                    <TableCell>{new Date(venta.FechaVenta).toLocaleDateString()}</TableCell>
-                    <TableCell>{venta.Tipo}</TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => editarVenta(venta)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => eliminarVenta(venta.ventaID)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+              {ventasPaginadas.map((venta) => (
+                <TableRow key={venta.ventaID}>
+                  <TableCell>{venta.ventaID}</TableCell>
+                  <TableCell>{venta.ClienteID}</TableCell>
+                  <TableCell>{venta.ServicioID}</TableCell>
+                  <TableCell>{venta.Cantidad}</TableCell>
+                  <TableCell>{venta.PrecioU}</TableCell>
+                  <TableCell>{venta.Total}</TableCell>
+                  <TableCell>{new Date(venta.FechaVenta).toLocaleDateString()}</TableCell>
+                  <TableCell>{venta.Tipo}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => editarVenta(venta)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => eliminarVenta(venta.ventaID)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -334,12 +340,12 @@ const Ventas = () => {
           rowsPerPage={ventasPorPagina}
           page={paginaActual}
           onPageChange={cambiarPagina}
-          onRowsPerPageChange={(e) => {
-            setVentasPorPagina(parseInt(e.target.value, 10));
+          onRowsPerPageChange={(event) => {
+            setVentasPorPagina(parseInt(event.target.value, 10));
             setPaginaActual(0);
           }}
         />
-      </Paper>
+      </Box>
     </Box>
   );
 };
