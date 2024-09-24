@@ -200,9 +200,31 @@ const Proveedor = () => {
               />
             </Grid>
           </Grid>
-          <Button type="submit" variant="contained" color="primary" style={{ marginTop: '16px' }}>
+          <Button type="submit" variant="contained" sx={{
+                padding: 1.5,
+                backgroundColor: '#3dbd2b',
+                '&:hover': {
+                  backgroundColor: '#184212',
+                  transform: 'scale(1.05)',
+                  transition: 'transform 0.2s ease-in-out',
+                },
+              }} style={{ marginTop: '16px' }}>
             {isEditing ? 'Actualizar Proveedor' : 'Agregar Proveedor'}
           </Button>
+          {isEditing && (
+              <Button variant="outlined" onClick={clearInputs} sx={{
+                padding: 1.5,
+                float: 'right',
+                marginTop: '16px',
+                '&:hover': {
+                  backgroundColor: '#7be36b',
+                  transform: 'scale(1.05)',
+                  transition: 'transform 0.2s ease-in-out',
+                },
+              }}>
+                Cancelar
+              </Button>
+            )}
         </form>
       </Paper>
       <Typography variant="h5" gutterBottom style={{ marginTop: '20px' }}>

@@ -337,11 +337,26 @@ const Ventas = () => {
             </Box>
           </Box>
           <Box display="flex" justifyContent="space-between" mt={2}>
-            <Button type="submit" variant="contained" color="primary">
+            <Button type="submit" variant="contained" sx={{
+                padding: 1.5,
+                backgroundColor: '#3dbd2b',
+                '&:hover': {
+                  backgroundColor: '#184212',
+                  transform: 'scale(1.05)',
+                  transition: 'transform 0.2s ease-in-out',
+                },
+              }}>
               {editando ? 'Actualizar Venta' : 'Registrar Venta'}
             </Button>
             {editando && (
-              <Button variant="outlined" onClick={resetForm}>
+              <Button variant="outlined" onClick={resetForm} sx={{
+                padding: 1.5,
+                '&:hover': {
+                  backgroundColor: '#7be36b',
+                  transform: 'scale(1.05)',
+                  transition: 'transform 0.2s ease-in-out',
+                },
+              }}>
                 Cancelar
               </Button>
             )}

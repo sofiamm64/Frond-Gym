@@ -137,6 +137,18 @@ const Compras = () => {
     }
   };
 
+  const resetForm = () => {
+    setCompraID('');
+    setProveedorID('');
+    setServicioID('');
+    setCantidad('');
+    setPrecioU('');
+    setTotal(0);
+    setFechacomp(new Date().toISOString().slice(0, 10));
+    setTipo('pendiente');
+    setEditando(false);
+  };
+
   const editarCompra = (compra) => {
     setCompraID(compra.compraID);
     setProveedorID(compra.ProveedorID);
@@ -319,7 +331,28 @@ const Compras = () => {
               </FormControl>
             </Box>
           </Box>
-          <Button variant="contained" color="primary" type="submit">{editando ? 'Guardar Cambios' : 'Registrar Compra'}</Button>
+          <Button variant="contained" sx={{
+                padding: 1.5,
+                backgroundColor: '#3dbd2b',
+                '&:hover': {
+                  backgroundColor: '#184212',
+                  transform: 'scale(1.05)',
+                  transition: 'transform 0.2s ease-in-out',
+                },
+              }} type="submit">{editando ? 'Guardar Cambios' : 'Registrar Compra'}</Button>
+              {editando && (
+              <Button variant="outlined" onClick={resetForm} sx={{
+                padding: 1.5,
+                float: 'right',
+                '&:hover': {
+                  backgroundColor: '#7be36b',
+                  transform: 'scale(1.05)',
+                  transition: 'transform 0.2s ease-in-out',
+                },
+              }}>
+                Cancelar
+              </Button>
+            )}
         </form>
       </Paper>
       <Typography variant="h5" gutterBottom style={{ marginTop: '20px' }}>
