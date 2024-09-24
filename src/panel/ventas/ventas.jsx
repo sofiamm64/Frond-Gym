@@ -292,7 +292,7 @@ const Ventas = () => {
           <MenuItem value="" disabled>Seleccione un Cliente</MenuItem>
           {clientes.map(cliente => (
             <MenuItem key={cliente._id} value={cliente._id}>
-              {cliente.nombre}
+              {cliente.Nombre} {cliente.apellido}
             </MenuItem>
           ))}
         </Select>
