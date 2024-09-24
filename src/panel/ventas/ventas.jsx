@@ -273,7 +273,7 @@ const Ventas = () => {
                 {editando ? 'Actualizar Venta' : 'Agregar Venta'}
         </Typography>
         <form onSubmit={editando ? guardarCambiosVenta : registrarVenta}>
-          <Box display="flex" flexWrap="wrap" justifyContent="space-between" mb={3}>
+          <Box display="flex" flexWrap="wrap" justifyContent="space-between" >
             <Box width="48%">
               <TextField label="ID Venta" value={VentaID} onChange={(e) => setVentaID(e.target.value)} margin='normal' fullWidth />
             </Box>
@@ -295,7 +295,7 @@ const Ventas = () => {
       </FormControl>
             </Box>
           </Box>
-          <Box display="flex" flexWrap="wrap" justifyContent="space-between" mb={3}>
+          <Box display="flex" flexWrap="wrap" justifyContent="space-between">
             <Box width="48%">
               <FormControl fullWidth margin='normal'>
                 <InputLabel shrink>Servicio</InputLabel>
@@ -313,7 +313,7 @@ const Ventas = () => {
               <TextField label="Cantidad" type="number" value={cantidad} onChange={handleCantidadChange} margin='normal' fullWidth />
             </Box>
           </Box>
-          <Box display="flex" flexWrap="wrap" justifyContent="space-between" mb={3}>
+          <Box display="flex" flexWrap="wrap" justifyContent="space-between" >
             <Box width="48%">
               <TextField label="Precio Unitario" value={precioU} onChange={(e)=> setPrecioU(e.target.value)} margin='normal' fullWidth disabled />
             </Box>
