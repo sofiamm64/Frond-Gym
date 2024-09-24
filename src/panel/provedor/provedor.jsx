@@ -96,6 +96,7 @@ const Proveedor = () => {
     } catch (error) {
       toast.error(error.response?.data?.mensaje || 'Error de red.');
     }
+    window.location.reload();
   };
 
   const handleEdit = (proveedor) => {
@@ -120,6 +121,7 @@ const Proveedor = () => {
       } catch (error) {
         toast.error(error.response?.data?.mensaje || 'Error de red.');
       }
+      window.location.reload();
     }
   };
 

@@ -90,6 +90,7 @@ const Servicio = () => {
     } catch (error) {
       handleError(error);
     }
+    window.location.reload();
   };
   const handleUpdateSubmit = async (event) => {
     event.preventDefault();
@@ -118,10 +119,12 @@ const Servicio = () => {
     } catch (error) {
       handleError(error);
     }
+    window.location.reload();
   };
 
   const handleDelete = async (ServicioID) => {
-    try {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este Servicio?')) {      
+      try {
       await axios.delete(`https://a-1-bym0.onrender.com/servicios/${ServicioID}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -130,7 +133,8 @@ const Servicio = () => {
     } catch (error) {
       handleError(error);
     }
-  };
+    window.location.reload();
+  }};
 
   const handleEstadoChange = async (ServicioID, newEstado) => {
     try {

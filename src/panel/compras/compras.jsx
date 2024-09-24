@@ -135,6 +135,7 @@ const Compras = () => {
     } catch {
       toast.error('Error al registrar la compra.');
     }
+    window.location.reload();
   };
 
   const resetForm = () => {
@@ -233,6 +234,7 @@ const Compras = () => {
         console.error('Error actualizando la compra:', error.response || error);
         toast.error('Error actualizando la compra. Revisa la consola para más detalles.');
     }
+    window.location.reload();
 };
 
 
@@ -240,6 +242,7 @@ const Compras = () => {
   
 
   const eliminarCompra = async (id) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta compra?')) {
     try {
       await axios.delete(`https://a-1-bym0.onrender.com/compras/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
@@ -249,6 +252,8 @@ const Compras = () => {
     } catch {
       toast.error('Error al eliminar la compra.');
     }
+    window.location.reload();
+  }
   };
 
   const indexUltimaCompra = paginaActual * comprasPorPagina + comprasPorPagina;

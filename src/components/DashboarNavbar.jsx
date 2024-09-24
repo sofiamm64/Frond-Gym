@@ -20,7 +20,7 @@ function DashboardNavbar() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        <ListItem button component={Link} to="/dashboard">
+        <ListItem button component={Link} to="/dashboard/panel">
           <ListItemText primary="Dashboard" />
         </ListItem>
         <ListItem button component={Link} to="/dashboard/clientes">
@@ -29,7 +29,7 @@ function DashboardNavbar() {
         <ListItem button component={Link} to="/dashboard/compras">
           <ListItemText primary="compras" />
         </ListItem>
-        <ListItem button component={Link} to="/dashboard/provedor">
+        <ListItem button component={Link} to="/dashboard/Proveedor">
           <ListItemText primary="Proveedor" />
         </ListItem>
         <ListItem button component={Link} to="/dashboard/servicio">

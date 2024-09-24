@@ -22,7 +22,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const Clientes = () => {
     const [clienteID, setClienteID] = useState('');
-    const [nombre, setNombre] = useState('');
+    const [Nombre, setNombre] = useState('');
     const [apellido, setApellido] = useState('');
     const [email, setEmail] = useState('');
     const [telefono, setTelefono] = useState('');
@@ -81,7 +81,7 @@ const Clientes = () => {
             const response = await axios({
                 method,
                 url,
-                data: { clienteID, nombre, apellido, email, telefono },
+                data: { clienteID, Nombre, apellido, email, telefono },
                 headers: { Authorization: `Bearer ${token}` },
             });
             toast.success(`${isEditing ? 'Cliente actualizado' : 'Cliente agregado'} con éxito!`);
@@ -90,6 +90,7 @@ const Clientes = () => {
                     ? prev.map((cli) => (cli.clienteID === currentClienteID ? response.data : cli))
                     : [...prev, response.data]
             );
+            console.log(clienteID)
             clearInputs();
             window.location.reload();
         } catch (error) {
@@ -118,6 +119,7 @@ const Clientes = () => {
             } catch (error) {
                 handleError(error);
             }
+            window.location.reload();
         }
     };
 
@@ -168,7 +170,7 @@ const Clientes = () => {
                         <Grid item xs={6}>
                             <TextField
                                 label="Nombre"
-                                value={nombre}
+                                value={Nombre}
                                 onChange={(e) => setNombre(e.target.value)}
                                 fullWidth
                                 required
@@ -255,24 +257,30 @@ const Clientes = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {filteredClientes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cliente) => (
-                            <TableRow key={cliente.clienteID}>
-                                <TableCell>{cliente.clienteID}</TableCell>
-                                <TableCell>{cliente.nombre}</TableCell>
-                                <TableCell>{cliente.apellido}</TableCell>
-                                <TableCell>{cliente.email}</TableCell>
-                                <TableCell>{cliente.telefono}</TableCell>
-                                <TableCell>
-                                    <IconButton onClick={() => handleEdit(cliente)}>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton onClick={() => handleDelete(cliente.clienteID)}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
+    {filteredClientes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((cliente) => {
+        // Agregar console.log para depuración
+        console.log(cliente); // Imprimir el cliente actual para verificar sus propiedades
+
+        return (
+            <TableRow key={cliente._id}>
+                <TableCell>{cliente.clienteID}</TableCell>
+                <TableCell>{cliente.Nombre}</TableCell>
+                <TableCell>{cliente.apellido}</TableCell>
+                <TableCell>{cliente.email}</TableCell>
+                <TableCell>{cliente.telefono}</TableCell>
+                <TableCell>
+                    <IconButton onClick={() => handleEdit(cliente)}>
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleDelete(cliente.clienteID)}>
+                        <DeleteIcon />
+                    </IconButton>
+                </TableCell>
+            </TableRow>
+        );
+    })}
+</TableBody>
+
                 </Table>
             </TableContainer>
             <TablePagination

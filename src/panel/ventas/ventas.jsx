@@ -136,6 +136,7 @@ const Ventas = () => {
       console.error('Error al registrar la venta:', error.response ? error.response.data : error.message);
       toast.error('Error al registrar la venta.');
     }
+    window.location.reload();
   };
 
 
@@ -238,9 +239,11 @@ const Ventas = () => {
         console.error('Error al registrar la venta:', error.response?.data || error.message);
         toast.error('Error al registrar la venta.');
     }
+    window.location.reload();
 };
 
   const eliminarVenta = async (VentaID) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta venta?')) {
     try {
       const token = localStorage.getItem('token'); 
       const respuesta = await axios.delete(`https://a-1-bym0.onrender.com/ventas/${VentaID}`, {
@@ -252,7 +255,8 @@ const Ventas = () => {
     } catch (error) {
       console.error("Error al eliminar la venta:", error);
     }
-  };
+    window.location.reload();
+  }};
 
   const indexUltimaVenta = paginaActual * ventasPorPagina + ventasPorPagina;
   const indexPrimeraVenta = indexUltimaVenta - ventasPorPagina;
@@ -392,12 +396,12 @@ const Ventas = () => {
             </TableHead>
             <TableBody>
               {ventasPaginadas.map((venta) => {
-                const cliente = clientes.find(cli => cli._id === Number(venta.clienteID));
+                const cliente = clientes.find(cli => Number(cli._id) === Number(venta._id));
                 const servicio = servicios.find(serv => serv.ServicioID === Number(venta.ServicioID));
                 return (
                   <TableRow key={venta._id}>
                     <TableCell>{venta.VentaID}</TableCell>
-                    <TableCell>{cliente ? cliente.nombre : 'Desconocido'}</TableCell>
+                    <TableCell>{cliente ? cliente.Nombre : 'Desconocido'}</TableCell>
                     <TableCell>{servicio ? servicio.Nombre : 'Desconocido'}</TableCell>
                     <TableCell>{venta.Cantidad}</TableCell>
                     <TableCell>{venta.PrecioU}</TableCell>
