@@ -12,7 +12,7 @@ import {
   Collapse,
   Alert,
 } from '@mui/material';
-import Swal from 'sweetalert2'; // Importa sweetalert2
+import Swal from 'sweetalert2';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -24,7 +24,6 @@ function Login() {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token) {
-      // Redirige al usuario si ya hay un token
       navigate('/dashboard');
     }
   }, [navigate]);

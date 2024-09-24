@@ -20,7 +20,7 @@ function DashboardNavbar() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        <ListItem button component={Link} to="/panel/dashboard">
+        <ListItem button component={Link} to="/dashboard">
           <ListItemText primary="Dashboard" />
         </ListItem>
         <ListItem button component={Link} to="/dashboard/clientes">

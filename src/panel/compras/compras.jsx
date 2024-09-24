@@ -152,82 +152,80 @@ const Compras = () => {
 
   
   const guardarCambiosCompra = async (e) => {
-     e.preventDefault();
+    e.preventDefault();
 
-  if (!proveedorID || !servicioID || !cantidad) {
-    toast.error('Por favor, completa todos los campos obligatorios.');
-    return;
-  }
-
-  try {
-    const compraActual = compras.find(compra => compra.compraID === compraActualId);
-
-    if (!compraActual) {
-      toast.error('Compra no encontrada.');
-      return;
+    if (!proveedorID || !servicioID || !cantidad) {
+        toast.error('Por favor, completa todos los campos obligatorios.');
+        return;
     }
 
-    switch (true) {
-      case compraActual.Tipo === 'completada' && (tipo === 'cancelado' || tipo === 'pendiente'):
-        await axios.put(
-          `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
-          { cantidad: -compraActual.Cantidad }, 
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setServicios((prevServicios) => {
-          const servicioActualizado = prevServicios.find(servicio => servicio.ServicioID === Number(compraActual.ServicioID));
-          if (servicioActualizado) {
-            servicioActualizado.Cantidad += Number(compraActual.Cantidad);
-          }
-          return [...prevServicios];
-        });
-        break;
+    try {
+        const compraActual = compras.find(compra => compra._id === compraActualId);
 
-      case compraActual.Tipo === 'pendiente' && tipo === 'completada':
-        await axios.put(
-          `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
-          { cantidad: Number(cantidad) },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setServicios((prevServicios) => {
-          const servicioActualizado = prevServicios.find(servicio => servicio.ServicioID === Number(compraActual.ServicioID));
-          if (servicioActualizado) {
-            servicioActualizado.Cantidad -= Number(cantidad); 
-          }
-          return [...prevServicios];
-        });
-        break;
+        if (!compraActual) {
+            toast.error('Compra no encontrada.');
+            return;
+        }
 
-      default:
-        break;
+        const cantidadServicio = Number(compraActual.Cantidad);
+        if (compraActual.Tipo === 'completada' && tipo === 'cancelado') {
+          await axios.put(
+              `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidadR`,
+              { cantidad: cantidadServicio }, 
+              { headers: { Authorization: `Bearer ${token}` } }
+          );
+      } else if (compraActual.Tipo === 'pendiente' && tipo === 'completada') {
+          // Cambia de pendiente a completada: debe sumar al stock
+          await axios.put(
+              `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
+              { cantidad: cantidadServicio }, 
+              { headers: { Authorization: `Bearer ${token}` } }
+          );
+      } else if (compraActual.Tipo === 'cancelado' && tipo === 'completada') {
+          // Cambia de cancelado a completada: debe sumar al stock
+          await axios.put(
+              `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidad`,
+              { cantidad: cantidadServicio }, 
+              { headers: { Authorization: `Bearer ${token}` } }
+          );
+      } else if (compraActual.Tipo === 'completada' && tipo === 'pendiente') {
+          await axios.put(
+              `https://a-1-bym0.onrender.com/servicios/${compraActual.ServicioID}/cantidadR`,
+              { cantidad: cantidadServicio }, 
+              { headers: { Authorization: `Bearer ${token}` } }
+          );
+      }
+      
+        const response = await axios.put(
+            `https://a-1-bym0.onrender.com/compras/${compraActualId}`,
+            {
+                ProveedorID: proveedorID,
+                ServicioID: servicioID,
+                Cantidad: Number(cantidad),
+                PrecioU: Number(precioU),
+                Fechacomp: new Date(fechacomp).toISOString(),
+                Total: total,
+                Tipo: tipo,
+            },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        setCompras((prevCompras) =>
+            prevCompras.map((compra) =>
+                compra._id === compraActualId ? response.data : compra
+            )
+        );
+
+        toast.success('Compra actualizada con éxito!');
+    } catch (error) {
+        console.error('Error actualizando la compra:', error.response || error);
+        toast.error('Error actualizando la compra. Revisa la consola para más detalles.');
     }
-
-
-    const response = await axios.put(
-      `https://a-1-bym0.onrender.com/compras/${compraActualId}`,
-      {
-        ProveedorID: proveedorID,
-        ServicioID: servicioID,
-        Cantidad: Number(cantidad),
-        PrecioU: Number(precioU),
-        Fechacomp: new Date(fechacomp).toISOString(),
-        Total: total,
-        Tipo: tipo,
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    setCompras((prevCompras) =>
-      prevCompras.map((compra) =>
-        compra._id === compraActualId ? response.data : compra
-      )
-    );
-
-    toast.success('Compra actualizada con éxito!');
-  } catch (error) {
-    toast.error(`Error al registrar la compra: ${error.response?.data?.message || 'Error desconocido.'}`);
-  }
 };
+
+
+
+  
 
   const eliminarCompra = async (id) => {
     try {
