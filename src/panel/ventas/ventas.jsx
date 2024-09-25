@@ -76,12 +76,12 @@ const Ventas = () => {
       setTotal(0);
     }
   };
-  const handleClienteChange = (e) => {
-    setClienteID(e.target.value);
+  const handleClienteChange = (event) => {
+    setClienteID(event.target.value); 
   };
 
   const ventasFiltradas = ventas.filter(venta => {
-    const cliente = clientes.find(cli => cli.ClienteID === Number(venta.ClienteID));
+    const cliente = clientes.find(cli => cli._id === Number(venta.ClienteID));
     const servicio = servicios.find(serv => serv.ServicioID === Number(venta.ServicioID));
     const clienteNombre = cliente ? cliente.nombre : '';
     const servicioNombre = servicio ? servicio.Nombre : '';
@@ -396,7 +396,9 @@ const Ventas = () => {
             </TableHead>
             <TableBody>
               {ventasPaginadas.map((venta) => {
-                const cliente = clientes.find(cli => Number(cli._id) === Number(venta._id));
+                const cliente = clientes.find(cli => cli._id === venta.ClienteID);
+                console.log("ClienteID de venta:", venta.ClienteID);
+                console.log("Cliente encontrado:", cliente);
                 const servicio = servicios.find(serv => serv.ServicioID === Number(venta.ServicioID));
                 return (
                   <TableRow key={venta._id}>
